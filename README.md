@@ -1,1 +1,1 @@
-# web-tech-2023
+#  Distributed system fundamentals & technologies web in Java 
