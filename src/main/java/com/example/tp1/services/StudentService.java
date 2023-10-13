@@ -1,7 +1,9 @@
-package com.example.tp1;
+package com.example.tp1.services;
 
+import com.example.tp1.Student;
+import com.example.tp1.StudentMapper;
+import com.example.tp1.repository.StudentEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +15,8 @@ public class StudentService {
     private StudentEntityRepository studentEntityRepository;
 
     public List<Student> findAll() {
-        return studentEntityRepository.findAll();
+        List<Student> studentsList = studentEntityRepository.findAll();
+        return StudentMapper.toStudents(studentsList);
     }
     public Optional<Student> findById(Integer id) {
         return studentEntityRepository.findById(id);

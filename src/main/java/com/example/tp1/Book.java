@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -18,6 +19,8 @@ public class Book {
     private String code;
     @Column(name = "title")
     private String title;
+    @Column(name = "available")
+    private Boolean available = true;
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "student_id")

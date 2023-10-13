@@ -1,5 +1,7 @@
-package com.example.tp1;
+package com.example.tp1.controllers;
 
+import com.example.tp1.Student;
+import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,7 @@ public class StudentController {
     }
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable("id") Integer id) {
-        studentService.deleteById(id);
+        Optional <Student> foundStudent = studentService.findById(id);
+        foundStudent.ifPresent(value -> studentService.deleteById(value.getId()));
     }
 }

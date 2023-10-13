@@ -2,15 +2,16 @@ package com.example.tp1;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "student")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Student {
     @Id
     @GeneratedValue
@@ -29,16 +30,4 @@ public class Student {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private List<Book> books;
-
-    public Student(String firstName, String lastName, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public Student() {
-
-    }
-
 }
