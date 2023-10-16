@@ -1,7 +1,6 @@
 package com.example.tp1.controllers;
 
-import com.example.tp1.Book;
-import com.example.tp1.repository.BookEntityRepository;
+import com.example.tp1.entity.BookEntity;
 import com.example.tp1.services.BookService;
 import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +18,36 @@ public class BookController {
     private StudentService studentService;
 
     @GetMapping
-    public Iterable<Book> findAll() {
+    public Iterable<BookEntity> findAll() {
         return bookService.findAll();
     }
+
     @PostMapping
-    public Book saveBook(@RequestBody Book book) {
+    public BookEntity saveBook(@RequestBody BookEntity book) {
         return bookService.save(book);
     }
+
     // Get all books rented by a student_id
     @GetMapping("/students/{studentId}")
-    public List<Book> findByStudentId(@PathVariable String studentId) {
+    public List<BookEntity> findByStudentId(@PathVariable String studentId) {
         return bookService.findByStudentId(Integer.parseInt(studentId));
     }
+
     @PostMapping("/rentbooks/{studentId}")
-    public List<Book> rentBooks(@PathVariable String studentId, @RequestBody List<String> booksCode) {
+    public List<BookEntity> rentBooks(@PathVariable String studentId, @RequestBody List<String> booksCode) {
         /*
-        *  1. Get all current rented books by a student_id
-        *     -> Set these books to available
-        *  2. With each book in booksCode
-        *   -> Verify if book is available
-        *   -> If available
-        *       -> Set book to unavailable
-        *       -> Set student_id to booksCode
-        *   -> If not available
-        *    -> throw exception or send error message
-        *  3. Return new rented books for student_id
-        * */
-        List<Book> books = findByStudentId(studentId);
+         *  1. Get all current rented books by a student_id
+         *     -> Set these books to available
+         *  2. With each book in booksCode
+         *   -> Verify if book is available
+         *   -> If available
+         *       -> Set book to unavailable
+         *       -> Set student_id to booksCode
+         *   -> If not available
+         *    -> throw exception or send error message
+         *  3. Return new rented books for student_id
+         * */
+        List<BookEntity> books = findByStudentId(studentId);
         books.forEach(book -> {
             System.out.println(book);
             book.setAvailable(true);
@@ -54,12 +56,12 @@ public class BookController {
         });
         booksCode.forEach(book -> {
             System.out.println(book);
-            Optional<Book> bookToRent= bookService.findByBookCode(book);
+            Optional<BookEntity> bookToRent = bookService.findByBookCode(book);
             bookToRent.ifPresent(value -> {
                 if (value.getAvailable()) {
                     value.setAvailable(false);
-                    value.setStudent(studentService.findById(Integer.parseInt(studentId)).orElse(null));
-                    studentService.findById(Integer.parseInt(studentId)).ifPresent(student -> {
+                    value.setStudent(studentService.findById(studentId).orElse(null));
+                    studentService.findById(studentId).ifPresent(student -> {
                         student.getBooks().add(value);
                         studentService.save(student);
                     });

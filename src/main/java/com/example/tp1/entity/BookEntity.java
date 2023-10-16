@@ -1,16 +1,15 @@
-package com.example.tp1;
+package com.example.tp1.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "books")
 @Data
-public class Book {
+public class BookEntity {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -26,11 +25,5 @@ public class Book {
     @JoinColumn(name = "student_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Student student;
-    public Book(String code, String title) {
-        this.code = code;
-        this.title = title;
-    }
-    public Book() {
-    }
+    private StudentEntity student;
 }

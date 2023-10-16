@@ -1,46 +1,57 @@
 package com.example.tp1.services;
 
-import com.example.tp1.Student;
-import com.example.tp1.StudentMapper;
+import com.example.tp1.domain.Student;
+import com.example.tp1.entity.StudentEntity;
+import com.example.tp1.mapper.StudentMapper;
 import com.example.tp1.repository.StudentEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StudentService {
     @Autowired
     private StudentEntityRepository studentEntityRepository;
 
-    public List<Student> findAll() {
-        List<Student> studentsList = studentEntityRepository.findAll();
+    public List<StudentEntity> findAll() {
+        List<StudentEntity> studentsList = studentEntityRepository.findAll();
         return StudentMapper.toStudents(studentsList);
     }
-    public Optional<Student> findById(Integer id) {
-        return studentEntityRepository.findById(id);
-    }
-    public Student findByEmail(String email) {
-        return studentEntityRepository.findByEmail(email);
-    }
-    public List<Student> findByFirstName(String firstname) {
-        return studentEntityRepository.findByFirstName(firstname);
-    }
-    public List<Student> findByAgeGreaterThan20() {
-        return studentEntityRepository.findByAgeGreaterThan20();
-    }
-    public Student saveStudent(Student student) {
-        return studentEntityRepository.save(student);
+
+    public Student findById(UUID id) throws Exception {
+        Optional<StudentEntity> studentEntityOptional = studentEntityRepository.findById(id);
+        StudentEntity studentEntity = studentEntityOptional.orElseThrow(() -> new Exception("Student not found"));
+        return StudentMapper.toStudent(studentEntity);
     }
 
-    public Student save(Student student) {
-        return studentEntityRepository.save(student);
+    public StudentEntity findByEmail(String email) {
+        return studentEntityRepository.findByEmail(email);
     }
-    public void saveAll(List<Student> student) {
-        studentEntityRepository.saveAll(student);
+
+    public List<StudentEntity> findByFirstName(String firstname) {
+        return studentEntityRepository.findByFirstName(firstname);
     }
-    public void deleteById(Integer id) {
+
+    public List<StudentEntity> findByAgeGreaterThan20() {
+        return studentEntityRepository.findByAgeGreaterThan20();
+    }
+
+    public StudentEntity saveStudent(StudentEntity studentEntity) {
+        return studentEntityRepository.save(studentEntity);
+    }
+
+    public StudentEntity save(StudentEntity studentEntity) {
+        return studentEntityRepository.save(studentEntity);
+    }
+
+    public void saveAll(List<StudentEntity> studentEntity) {
+        studentEntityRepository.saveAll(studentEntity);
+    }
+
+    public void deleteById(UUID id) {
         studentEntityRepository.deleteById(id);
     }
 }

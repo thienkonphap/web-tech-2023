@@ -1,9 +1,12 @@
-package com.example.tp1;
+package com.example.tp1.mapper;
+
+import com.example.tp1.domain.Student;
+import com.example.tp1.entity.StudentEntity;
 
 import java.util.List;
 
 public class StudentMapper {
-    public static Student toStudent(Student studentEntity) {
+    public static Student toStudent(StudentEntity studentEntity) {
         return Student.builder()
                 .id(studentEntity.getId())
                 .firstName(studentEntity.getFirstName())
@@ -12,11 +15,13 @@ public class StudentMapper {
                 .age(studentEntity.getAge())
                 .build();
     }
-    public static List<Student> toStudents(List<Student> studentEntities) {
+
+    public static List<StudentEntity> toStudents(List<StudentEntity> studentEntities) {
         return studentEntities.stream().map(StudentMapper::toStudent).toList();
     }
-    public static Student toStudentEntity(Student model) {
-        return Student.builder()
+
+    public static StudentEntity toStudentEntity(StudentEntity model) {
+        return StudentEntity.builder()
                 .id(model.getId())
                 .firstName(model.getFirstName())
                 .lastName(model.getLastName())
