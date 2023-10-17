@@ -27,22 +27,22 @@ public class ServiceTest {
 
     @BeforeEach
     void setUp() {
-        // tested = new StudentService(repository);
+        tested = new StudentService(repository);
     }
 
     @Test
     void should_get_student_by_id() throws Exception {
-        // given
+        // GIVEN
         UUID id = UUID.randomUUID();
         StudentEntity studentEntity = new StudentEntity(id, "David", "Klezt", "david@gmail.com", 23, null);
         Optional<StudentEntity> optionalStudent = Optional.of(studentEntity);
         Mockito.when(repository.findById(id)).thenReturn(optionalStudent);
         Student expected = StudentMapper.toStudent(studentEntity);
-
-        // when
-        // Student actual = tested.findById(id);
-        // then
-        // Assertions.assertThat(actual).isEqualTo(expected);
+        // WHEN
+        Optional <StudentEntity> actual = tested.findById(id);
+        Student res = StudentMapper.toStudent(actual.get());
+        // THEN
+        Assertions.assertThat(res).isEqualTo(expected);
     }
 
     @Test
