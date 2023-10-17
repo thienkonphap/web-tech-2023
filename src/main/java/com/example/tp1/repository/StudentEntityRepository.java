@@ -13,9 +13,11 @@ import java.util.UUID;
 public interface StudentEntityRepository extends JpaRepository<StudentEntity, Integer> {
     Optional<StudentEntity> findById(UUID id);
 
-    public StudentEntity findByEmail(String email);
+    public Optional<StudentEntity> findByEmail(String email);
 
     public List<StudentEntity> findByFirstName(String firstname);
+
+    public List<StudentEntity> findByFirstNameAndLastName(String firstname, String lastname);
 
     @Query("SELECT s FROM StudentEntity s WHERE s.age > 20")
     public List<StudentEntity> findByAgeGreaterThan20();

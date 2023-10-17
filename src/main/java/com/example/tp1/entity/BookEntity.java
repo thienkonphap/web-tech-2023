@@ -6,14 +6,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "books")
+@Table(name = "books_v2")
 @Data
 public class BookEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
-    private Integer id;
+    private UUID id;
     @Column(name = "code")
     private String code;
     @Column(name = "title")

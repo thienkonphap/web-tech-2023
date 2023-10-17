@@ -16,7 +16,7 @@ public class StudentMapper {
                 .build();
     }
 
-    public static List<StudentEntity> toStudents(List<StudentEntity> studentEntities) {
+    public static List<Student> toStudents(List<StudentEntity> studentEntities) {
         return studentEntities.stream().map(StudentMapper::toStudent).toList();
     }
 

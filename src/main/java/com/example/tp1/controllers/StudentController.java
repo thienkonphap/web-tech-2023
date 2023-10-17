@@ -5,6 +5,7 @@ import com.example.tp1.entity.StudentEntity;
 import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,20 +18,26 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping
-    public List<Student> findAll() {
+    public List<StudentEntity> findAll() {
         return studentService.findAll();
     }
 
-    @GetMapping("/email/{email}")
-    public StudentEntity findByEmail(@PathVariable("email") String email) {
+    @GetMapping("/email/{abcd}")
+    public Optional<StudentEntity> findByEmail(@PathVariable("abcd") String email) {
         return studentService.findByEmail(email);
     }
 
-    @GetMapping("/firstname/{firstname}")
-    public List<StudentEntity> findByFirstName(@PathVariable("firstname") String firstname) {
-        return studentService.findByFirstName(firstname);
+    @PostMapping("/firstname/{firstname}/{email}")
+    public Optional<StudentEntity> updateFirstName(@PathVariable("firstname") String firstname, @PathVariable("email") String email) {
+        Optional <StudentEntity> foundStudent = findByEmail(email);
+        foundStudent.ifPresent(student -> student.setFirstName(firstname));
+        studentService.save(foundStudent.orElse(null));
+        return foundStudent;
     }
-
+    @GetMapping("/id/{id}")
+    public Optional<StudentEntity> findById(@PathVariable UUID id) {
+        return studentService.findById(id);
+    }
     @PostMapping
     public StudentEntity saveStudent(@RequestBody StudentEntity student) {
         return studentService.saveStudent(student);
@@ -41,11 +48,11 @@ public class StudentController {
         return studentService.findByAgeGreaterThan20();
     }
 
-    @PutMapping()
-    public StudentEntity updateStudentByEmail(@RequestBody StudentEntity student, @RequestParam String email) {
-        Optional<StudentEntity> foundStudent = studentService.findById(student.getId());
-        foundStudent.ifPresent(value -> value.setEmail(email));
-        return studentService.save(foundStudent.orElse(null));
+    @PutMapping("/update")
+    public StudentEntity updateStudentEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("newEmail") String newEMail) {
+        Optional<StudentEntity> foundStudent = studentService.findByEmail(oldEmail);
+        foundStudent.ifPresent(student -> student.setEmail(newEMail));
+        return studentService.saveStudent(foundStudent.orElse(null));
     }
 
     @PutMapping("/incrementage")
@@ -56,8 +63,14 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable("id") UUID id) {
+    public ResponseEntity<String> deleteStudentById(@PathVariable("id") UUID id) {
         Optional<StudentEntity> foundStudent = studentService.findById(id);
-        foundStudent.ifPresent(value -> studentService.deleteById(value.getId()));
+        if (foundStudent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        else {
+            studentService.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
     }
 }

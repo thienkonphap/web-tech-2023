@@ -4,6 +4,7 @@ import com.example.tp1.domain.Student;
 import com.example.tp1.entity.StudentEntity;
 import com.example.tp1.mapper.StudentMapper;
 import com.example.tp1.repository.StudentEntityRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,22 +13,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class StudentService {
-    @Autowired
-    private StudentEntityRepository studentEntityRepository;
+    private final StudentEntityRepository studentEntityRepository;
 
     public List<StudentEntity> findAll() {
         List<StudentEntity> studentsList = studentEntityRepository.findAll();
-        return StudentMapper.toStudents(studentsList);
+        return studentsList;
     }
 
-    public Student findById(UUID id) throws Exception {
-        Optional<StudentEntity> studentEntityOptional = studentEntityRepository.findById(id);
-        StudentEntity studentEntity = studentEntityOptional.orElseThrow(() -> new Exception("Student not found"));
-        return StudentMapper.toStudent(studentEntity);
+    public Optional<StudentEntity>  findById(UUID id) {
+        return studentEntityRepository.findById(id);
     }
 
-    public StudentEntity findByEmail(String email) {
+    public Optional<StudentEntity> findByEmail(String email) {
         return studentEntityRepository.findByEmail(email);
     }
 

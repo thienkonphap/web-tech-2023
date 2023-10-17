@@ -1,13 +1,17 @@
 package com.example.tp1.controllers;
 
 import com.example.tp1.entity.BookEntity;
+import com.example.tp1.entity.StudentEntity;
 import com.example.tp1.services.BookService;
 import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/books")
@@ -27,14 +31,15 @@ public class BookController {
         return bookService.save(book);
     }
 
-    // Get all books rented by a student_id
+    // Get all books current rented by a student_id
+
     @GetMapping("/students/{studentId}")
-    public List<BookEntity> findByStudentId(@PathVariable String studentId) {
-        return bookService.findByStudentId(Integer.parseInt(studentId));
+    public List<BookEntity> findByStudentId(@PathVariable UUID studentId) {
+        return bookService.findByStudentId(studentId);
     }
 
     @PostMapping("/rentbooks/{studentId}")
-    public List<BookEntity> rentBooks(@PathVariable String studentId, @RequestBody List<String> booksCode) {
+    public List<BookEntity> rentBooks(@PathVariable UUID studentId, @RequestBody List<String> booksTitlesList) {
         /*
          *  1. Get all current rented books by a student_id
          *     -> Set these books to available
@@ -47,30 +52,37 @@ public class BookController {
          *    -> throw exception or send error message
          *  3. Return new rented books for student_id
          * */
-        List<BookEntity> books = findByStudentId(studentId);
-        books.forEach(book -> {
-            System.out.println(book);
-            book.setAvailable(true);
+        Optional<StudentEntity> studentRent = studentService.findById(studentId);
+        if(!studentRent.isPresent()) {
+            throw new RuntimeException("Student not found");
+        }
+        List<BookEntity> currentRentedBooks = bookService.findByStudentId(studentId);
+        List<BookEntity> newBookToRent = new ArrayList();
+        currentRentedBooks.forEach(book -> {
             book.setStudent(null);
+            book.setAvailable(true);
             bookService.save(book);
         });
-        booksCode.forEach(book -> {
-            System.out.println(book);
-            Optional<BookEntity> bookToRent = bookService.findByBookCode(book);
-            bookToRent.ifPresent(value -> {
-                if (value.getAvailable()) {
-                    value.setAvailable(false);
-                    value.setStudent(studentService.findById(studentId).orElse(null));
-                    studentService.findById(studentId).ifPresent(student -> {
-                        student.getBooks().add(value);
-                        studentService.save(student);
-                    });
-                    bookService.save(value);
+        booksTitlesList.forEach(
+                book -> {
+                    Optional<BookEntity> foundBook = bookService.findByTile(book);
+                    if (foundBook.isPresent()) {
+                        if(foundBook.get().getAvailable()) {
+                            foundBook.get().setAvailable(false);
+                            foundBook.get().setStudent(studentService.findById(studentId).get());
+                            newBookToRent.add(foundBook.get());
+                            bookService.save(foundBook.get());
+                        } else {
+                            throw new RuntimeException("Book is not available");
+                        }
+                    }
+
                 }
-            });
-            bookService.save(bookToRent.orElse(null));
-        });
-        return bookService.findByStudentId(Integer.parseInt(studentId));
+        );
+        studentRent.get().setBooks(newBookToRent);
+        studentService.save(studentRent.get());
+        return newBookToRent;
     }
+
 
 }

@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "student")
+@Table(name = "students_v2")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class StudentEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
     @Column(name = "first_name")

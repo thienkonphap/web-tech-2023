@@ -7,16 +7,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface BookEntityRepository extends JpaRepository<BookEntity, Integer> {
+public interface BookEntityRepository extends JpaRepository<BookEntity, Long> {
     public List<BookEntity> findAll();
 
     public BookEntity save(BookEntity book);
 
     public Optional<BookEntity> findByCode(String code);
 
-    public List<BookEntity> findByStudentId(Integer studentId);
+    // public List<BookEntity> findByStudentId(Integer studentId);
 
     public List<BookEntity> findByStudent(StudentEntity student);
+    public List<BookEntity> findByStudentId(UUID studentId);
+    public Optional<BookEntity> findByTitle(String title);
 }
