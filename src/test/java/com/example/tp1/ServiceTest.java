@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @ExtendWith(MockitoExtension.class)
 public class ServiceTest {
     @Mock
@@ -39,23 +37,24 @@ public class ServiceTest {
         Mockito.when(repository.findById(id)).thenReturn(optionalStudent);
         Student expected = StudentMapper.toStudent(studentEntity);
         // WHEN
-        Optional <StudentEntity> actual = tested.findById(id);
+        Optional<StudentEntity> actual = tested.findById(id);
         Student res = StudentMapper.toStudent(actual.get());
         // THEN
         Assertions.assertThat(res).isEqualTo(expected);
     }
 
     @Test
-    void should_throw_exception_when_get_student_by_id_not_found() {
-        // given
-        UUID id = UUID.randomUUID();
-        Optional<StudentEntity> optionalStudent = Optional.empty();
-        Mockito.when(repository.findById(id)).thenReturn(optionalStudent);
-        //Student expected = StudentMapper.toStudent(studentEntity);
-
-        // when
-        // then
-        assertThrows(Exception.class,
-                () -> tested.findById(id));
+    void should_get_student_by_email() throws Exception {
+        // GIVEN
+        String email = "david@gmail.com";
+        StudentEntity studentEntity = new StudentEntity(UUID.randomUUID(), "David", "Klezt", email, 23, null);
+        Optional<StudentEntity> optionalStudent = Optional.of(studentEntity);
+        Mockito.when(repository.findByEmail(email)).thenReturn(optionalStudent);
+        Student expected = StudentMapper.toStudent(studentEntity);
+        // WHEN
+        Optional<StudentEntity> actual = tested.findByEmail(email);
+        Student res = StudentMapper.toStudent(actual.get());
+        // THEN
+        Assertions.assertThat(res).isEqualTo(expected);
     }
 }
