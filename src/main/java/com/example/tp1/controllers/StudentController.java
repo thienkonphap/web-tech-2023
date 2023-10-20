@@ -1,6 +1,5 @@
 package com.example.tp1.controllers;
 
-import com.example.tp1.domain.Student;
 import com.example.tp1.entity.StudentEntity;
 import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +28,17 @@ public class StudentController {
 
     @PostMapping("/firstname/{firstname}/{email}")
     public Optional<StudentEntity> updateFirstName(@PathVariable("firstname") String firstname, @PathVariable("email") String email) {
-        Optional <StudentEntity> foundStudent = findByEmail(email);
+        Optional<StudentEntity> foundStudent = findByEmail(email);
         foundStudent.ifPresent(student -> student.setFirstName(firstname));
         studentService.save(foundStudent.orElse(null));
         return foundStudent;
     }
+
     @GetMapping("/id/{id}")
     public Optional<StudentEntity> findById(@PathVariable UUID id) {
         return studentService.findById(id);
     }
+
     @PostMapping
     public StudentEntity saveStudent(@RequestBody StudentEntity student) {
         return studentService.saveStudent(student);
@@ -67,8 +68,7 @@ public class StudentController {
         Optional<StudentEntity> foundStudent = studentService.findById(id);
         if (foundStudent.isEmpty()) {
             return ResponseEntity.notFound().build();
-        }
-        else {
+        } else {
             studentService.deleteById(id);
             return ResponseEntity.ok().build();
         }

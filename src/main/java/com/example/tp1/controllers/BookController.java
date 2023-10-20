@@ -7,7 +7,6 @@ import com.example.tp1.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +30,6 @@ public class BookController {
         return bookService.save(book);
     }
 
-    // Get all books current rented by a student_id
-
     @GetMapping("/students/{studentId}")
     public List<BookEntity> findByStudentId(@PathVariable UUID studentId) {
         return bookService.findByStudentId(studentId);
@@ -40,20 +37,8 @@ public class BookController {
 
     @PostMapping("/rentbooks/{studentId}")
     public List<BookEntity> rentBooks(@PathVariable UUID studentId, @RequestBody List<String> booksTitlesList) {
-        /*
-         *  1. Get all current rented books by a student_id
-         *     -> Set these books to available
-         *  2. With each book in booksCode
-         *   -> Verify if book is available
-         *   -> If available
-         *       -> Set book to unavailable
-         *       -> Set student_id to booksCode
-         *   -> If not available
-         *    -> throw exception or send error message
-         *  3. Return new rented books for student_id
-         * */
         Optional<StudentEntity> studentRent = studentService.findById(studentId);
-        if(!studentRent.isPresent()) {
+        if (!studentRent.isPresent()) {
             throw new RuntimeException("Student not found");
         }
         List<BookEntity> currentRentedBooks = bookService.findByStudentId(studentId);
@@ -67,7 +52,7 @@ public class BookController {
                 book -> {
                     Optional<BookEntity> foundBook = bookService.findByTile(book);
                     if (foundBook.isPresent()) {
-                        if(foundBook.get().getAvailable()) {
+                        if (foundBook.get().getAvailable()) {
                             foundBook.get().setAvailable(false);
                             foundBook.get().setStudent(studentService.findById(studentId).get());
                             newBookToRent.add(foundBook.get());
@@ -76,13 +61,10 @@ public class BookController {
                             throw new RuntimeException("Book is not available");
                         }
                     }
-
                 }
         );
         studentRent.get().setBooks(newBookToRent);
         studentService.save(studentRent.get());
         return newBookToRent;
     }
-
-
 }

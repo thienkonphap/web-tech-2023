@@ -1,11 +1,8 @@
 package com.example.tp1.services;
 
-import com.example.tp1.domain.Student;
 import com.example.tp1.entity.StudentEntity;
-import com.example.tp1.mapper.StudentMapper;
 import com.example.tp1.repository.StudentEntityRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class StudentService {
         return studentsList;
     }
 
-    public Optional<StudentEntity>  findById(UUID id) {
+    public Optional<StudentEntity> findById(UUID id) {
         return studentEntityRepository.findById(id);
     }
 

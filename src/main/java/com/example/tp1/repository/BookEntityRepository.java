@@ -17,9 +17,9 @@ public interface BookEntityRepository extends JpaRepository<BookEntity, Long> {
 
     public Optional<BookEntity> findByCode(String code);
 
-    // public List<BookEntity> findByStudentId(Integer studentId);
-
     public List<BookEntity> findByStudent(StudentEntity student);
+
     public List<BookEntity> findByStudentId(UUID studentId);
+
     public Optional<BookEntity> findByTitle(String title);
 }
