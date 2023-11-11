@@ -25,15 +25,18 @@ public class Main {
                 ResponseEntity<InfoInPage> response2 = restTemplate.getForEntity(url, InfoInPage.class);
                 if (response2.getStatusCode() == HttpStatus.OK) {
                     MatchInfor[] data = response2.getBody().data;
-                    int countGoals = 0;
+                    int totalGoalsInPage = 0;
                     for (MatchInfor matchInfor : data) {
                         if (asTeam.equals("1"))
-                            countGoals += Integer.parseInt(matchInfor.getTeam1goals());
+                            totalGoalsInPage += Integer.parseInt(matchInfor.getTeam1goals());
                         else if (asTeam.equals("2")) {
-                            countGoals += Integer.parseInt(matchInfor.getTeam2goals());
+                            totalGoalsInPage += Integer.parseInt(matchInfor.getTeam2goals());
                         }
                     }
-                    totalGoals += countGoals;
+                    totalGoals += totalGoalsInPage;
+                }
+                else {
+                    throw new RuntimeException("Something wrong when calling API");
                 }
             }
             return totalGoals;
@@ -47,7 +50,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
         System.out.println(getTotalGoalsByTeamAndYear("Barcelona", "2011"));
     }
 }
