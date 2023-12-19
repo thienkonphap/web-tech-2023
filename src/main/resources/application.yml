@@ -15,6 +15,6 @@ spring:
       hibernate.jdbc.time_zone: UTC
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Konphap123
+    url: jdbc:postgresql://cornelius.db.elephantsql.com:5432/fmxvhdzn
+    username: fmxvhdzn
+    password: RF8CxIVVPxjDxi2btDifmS5z-1CU3K4r

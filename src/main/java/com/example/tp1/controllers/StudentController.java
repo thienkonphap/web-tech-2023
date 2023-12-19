@@ -16,6 +16,7 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @CrossOrigin(origins = {"http://localhost:4200"})
     @GetMapping
     public List<StudentEntity> findAll() {
         return studentService.findAll();
@@ -39,6 +40,7 @@ public class StudentController {
         return studentService.findById(id);
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200"})
     @PostMapping
     public StudentEntity saveStudent(@RequestBody StudentEntity student) {
         return studentService.saveStudent(student);
